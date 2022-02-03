@@ -1,0 +1,155 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@1.25.4/dist/full.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2/dist/tailwind.min.css" rel="stylesheet" type="text/css" />
+    <title>{% block title %} {% endblock %}</title>
+</head>
+
+<body>
+    <header>
+        <div class="navbar mb-2 shadow-lg bg-neutral text-neutral-content  ">
+            <div class="flex-1 hidden px-2 mx-2 lg:flex">
+                <span class="text-lg font-bold">
+                    daisyUI
+                </span>
+            </div>
+            <div class="flex-1 px-2 mx-2">
+                <div class="items-stretch hidden lg:flex">
+                    <a href="/shop" class="btn btn-ghost btn-sm rounded-btn">
+                        Home
+                    </a>
+
+                    <a href="/shop/about" class="btn btn-ghost btn-sm rounded-btn">
+                        About
+                    </a>
+                    <a href="/shop/contact" class="btn btn-ghost btn-sm rounded-btn">
+                        Contact
+                    </a>
+                </div>
+            </div>
+            <div class="flex-1 lg:flex-none">
+                <div class="form-control">
+                    <input type="text" placeholder="Search" class="input input-ghost">
+                </div>
+            </div>
+            <div class="flex-none">
+                <button class="btn btn-square btn-ghost">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                        class="inline-block w-6 h-6 stroke-current">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                    </svg>
+                </button>
+            </div>
+            <div class="my-6 indicator h-2">
+                <a href="/shop/checkout/">
+                <button class="btn btn-square btn-ghost">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                    <span id="cart"
+                        class="absolute right-0 top-0 rounded-full bg-red-600 w-4 h-4 top right p-0 m-0 text-white font-mono text-sm  leading-tight text-center">0
+                    </span>
+                </button>
+            </a>
+
+            </div>
+
+            <div class="flex-none">
+                <div class="avatar">
+                    <div class="rounded-full w-10 h-10 m-1">
+                        <img src="https://i.pravatar.cc/500?img=32">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+        integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+        crossorigin="anonymous"></script>
+    {% block body %} {% endblock %}
+    {% block js %}
+    <script>
+        if (localStorage.getItem('cart') == null) {
+            var cart = {};
+        } else {
+            cart = JSON.parse(localStorage.getItem('cart'));
+            document.getElementById('cart').innerHTML = Object.keys(cart).length;
+            updateCart(cart);
+        }
+        // If the add to cart button is clicked, add/increment the item
+        $('.divpr').on('click', 'button.cart', function() {
+        var idstr = this.id.toString();
+        if (cart[idstr] != undefined) {
+            qty = cart[idstr][0] + 1;
+            
+        } else {
+            qty = 1;
+            name = document.getElementById('name'+idstr).innerHTML
+            cart[idstr] = [qty, name];
+    
+        }
+        updateCart(cart);
+    });
+        //Add Popover to cart
+    
+        $('#popcart').popover();
+        updatePopover(cart);
+        function updatePopover(cart) {
+            console.log('We are inside updatePopover');
+            var popStr = "";
+            popStr = popStr + "<h5> Cart for your items in my shopping cart </h5><div class='mx-2 my-2'>";
+            var i = 1;
+            for (var item in cart) {
+                popStr = popStr + "<b>" + i + "</b>. ";
+                popStr = popStr + document.getElementById('name' + item).innerHTML.slice(0, 19) + "... Qty: " + cart[item] + '<br>';
+                i = i + 1;
+            }
+            popStr = popStr + "</div>"
+            console.log(popStr);
+            document.getElementById('popcart').setAttribute('data-content', popStr);
+            $('#popcart').popover('show');
+        }
+        function updateCart(cart) {
+            for (var item in cart) {
+                document.getElementById('div' + item).innerHTML = "<button id='minus" + item + "' class='btn btn-primary minus'>-</button> <span id='val" + item + "''>" + cart[item] + "</span> <button id='plus" + item + "' class='btn btn-primary plus'> + </button>";
+            }
+            localStorage.setItem('cart', JSON.stringify(cart));
+            document.getElementById('cart').innerHTML = Object.keys(cart).length;
+            console.log(cart);
+            updatePopover(cart);
+        }
+        // If plus or minus button is clicked, change the cart as well as the display value
+        $('.divpr').on("click", "button.minus", function() {
+        a = this.id.slice(7, );
+        cart['pr' + a][0] = cart['pr' + a][0] - 1;
+        cart['pr' + a][0] = Math.max(0, cart['pr' + a][0]);
+        document.getElementById('valpr' + a).innerHTML = cart['pr' + a][0];
+        updateCart(cart);
+    });
+    $('.divpr').on("click", "button.plus", function() {
+        a = this.id.slice(6, );
+        cart['pr' + a][0] = cart['pr' + a][0] + 1;
+        document.getElementById('valpr' + a).innerHTML = cart['pr' + a][0];
+        updateCart(cart);
+    });
+    </script>
+    {% endblock %}
+
+
+</body>
+
+</html>
