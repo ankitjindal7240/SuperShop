@@ -13,7 +13,8 @@
     </div>
     <div class="col my-4">
         <h2>Step 2 - Enter Address & Other Details:</h2>
-        <form>
+        <form method="post" action="/shop/checkout/">{% csrf_token %}
+            <input type="hidden" name="itemsJson" id="itemsJson">
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="inputname">Name</label>
@@ -81,5 +82,16 @@ if ($.isEmptyObject(cart)) {
     }
 }
 document.getElementById('cart').innerHTML = sum;
+
 </script>
+{% if thank %}
+<script>
+$('#itemsJson').val(JSON.stringify(cart));
+
+alert("Thanks for ordering with us. Your order id is {{id}}. Use it to track your order using our order tracker")
+localStorage.clear();
+document.location="/shop";
+</script>
+{%endif%}
+
 {% endblock %}
