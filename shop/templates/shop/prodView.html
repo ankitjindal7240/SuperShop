@@ -2,6 +2,7 @@
 
 {% block title%}  {{product.product_name}} {% endblock %}
 {% block body %} 
+
 <section class="text-gray-600 body-font overflow-hidden">
     <div class="container px-5 py-24 mx-auto">
       <div class="lg:w-4/5 mx-auto flex flex-wrap">
@@ -79,6 +80,7 @@
                 <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"></path>
               </svg>
             </button>
+            <div class="fb-comments" data-href="https://supershopp.herokuapp.com/shop/products/{{product.product_id}}" data-width="" data-numposts="5"></div>
           </div>
         </div>
       </div>
